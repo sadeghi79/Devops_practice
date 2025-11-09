@@ -35,3 +35,10 @@ jobs:
       - name: Clean up
         if: always()
         run: docker compose -f docker-compose.yml down
+
+      - name: Simulate Deployment
+        run: |
+          echo "✅ Starting simulated deployment..."
+          echo "Deploying Flask + Nginx app to production environment (simulated)"
+          sleep 5
+          echo "🚀 Deployment completed successfully!"
