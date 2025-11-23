@@ -1,0 +1,39 @@
+name: AI DevOps Agent
+
+on:
+  workflow_run:
+    workflows: ["CI/CD - Flask + Nginx App"]
+    types: [completed]
+
+jobs:
+  analyze_ci_logs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Agent dependencies
+        run: |
+          cd devops_ai_agent
+          pip install -r requirements.txt
+
+      # خواندن لاگ CI که توسط خود Workflow CI تولید شده
+      - name: Ensure CI logs exist
+        run: |
+          if [ ! -f devops_ai_agent/logs/ci_latest.log ]; then 
+            echo "No CI logs found!" > devops_ai_agent/logs/ci_latest.log; 
+          fi
+
+      - name: Run AI Agent on CI logs
+        run: |
+          cd devops_ai_agent
+          python3 app.py <<EOF
+1
+logs/ci_latest.log
+EOF

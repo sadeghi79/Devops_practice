@@ -1,20 +1,23 @@
-version: '3'
-
 services:
-  flask:
-    build:
-      context: ./app
-      dockerfile: Dockerfile
-    container_name: flask_app
+  app:
+    build: ./app
+    container_name: flask-app
     ports:
       - "5000:5000"
 
   nginx:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    container_name: nginx_proxy
+    build: ./nginx
+    container_name: nginx-server
     ports:
       - "80:80"
     depends_on:
-      - flask
+      - app
+
+  agent:
+    build: ./devops_ai_agent
+    container_name: devops-ai-agent
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./devops_ai_agent/logs:/agent/logs
+
